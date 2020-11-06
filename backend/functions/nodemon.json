@@ -1,0 +1,21 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules",
+    "lib"
+  ],
+  "verbose": true,
+  "execMap": {
+    "ts": "ts-node"
+  },
+  "runOnChangeOnly": false,
+  "watch": [
+    "src/**/*.ts"
+  ],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "ext": "ts",
+  "delay": "2000"
+}
