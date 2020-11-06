@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>103317659497-g6mrp5itp7s0e5cdgukuigatnrkpj5nk.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.103317659497-g6mrp5itp7s0e5cdgukuigatnrkpj5nk</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>103317659497-cc2iekve9rtv4jdk3qlr57jk2oki636j.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDzsxqi8F0Yas_Cn4GrRWiXuzWW48AYknY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>103317659497</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.travelog</string>
+	<key>PROJECT_ID</key>
+	<string>travellog-bhu</string>
+	<key>STORAGE_BUCKET</key>
+	<string>travellog-bhu.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:103317659497:ios:e2e79e4a1f44efcc58e7f8</string>
+	<key>DATABASE_URL</key>
+	<string>https://travellog-bhu.firebaseio.com</string>
+</dict>
+</plist>

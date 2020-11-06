@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+import './screens/home.dart';
+import './screens/login.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Travelog',
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColor: Colors.cyan[200],
+        textTheme: TextTheme(
+          bodyText2: TextStyle(fontSize: 14.0, color: Colors.white),
+        ),
+      ),
+      // home: HomePage(title: 'Travelog'),
+      home: LoginPage(),
+    );
+  }
+}

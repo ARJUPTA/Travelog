@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "103317659497",
+    "firebase_url": "https://travellog-bhu.firebaseio.com",
+    "project_id": "travellog-bhu",
+    "storage_bucket": "travellog-bhu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103317659497:android:f54b918f0b56321f58e7f8",
+        "android_client_info": {
+          "package_name": "com.example.travelog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "103317659497-cc2iekve9rtv4jdk3qlr57jk2oki636j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.travelog",
+            "certificate_hash": "ac183e9ff44b85741ee65d16a5221c7b81634c09"
+          }
+        },
+        {
+          "client_id": "103317659497-dqp8ljgf66lequfgdskd3ucp5ctcn40p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYsWQSm3j-W9TLEr6ujgurABSI8F9A8VM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "103317659497-dqp8ljgf66lequfgdskd3ucp5ctcn40p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
