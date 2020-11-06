@@ -34,7 +34,7 @@ export const verfiyIDToken = async (req: Request, res: Response, next: NextFunct
 				}
 			}
 
-			req.body.profile_pic = providerData.filter(userInfo => !!userInfo.photoURL)[0];
+			req.body.profile_pic = providerData.filter(userInfo => !!userInfo.photoURL)[0] ?? null;
 			req.body.email = email;
 			req.body.uid = decodedToken.uid;
 			req.body.email_verified = emailVerified;
