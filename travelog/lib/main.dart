@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import './screens/home.dart';
 import './screens/login.dart';
@@ -19,7 +20,14 @@ class MyApp extends StatelessWidget {
         ),
       ),
       // home: HomePage(title: 'Travelog'),
-      home: LoginPage(),
+      home: FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting)
+            return Center(child: CircularProgressIndicator());
+          return LoginPage();
+        },
+      ),
     );
   }
 }

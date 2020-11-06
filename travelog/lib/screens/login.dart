@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../providers/fireauth.dart';
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -86,7 +88,19 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ]),
                     RaisedButton(
-                      onPressed: () => {},
+                      onPressed: () {
+                        FireAuth.signInWithGoogle().then((result) {
+                          if (result != null) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return HomePage();
+                                },
+                              ),
+                            );
+                          }
+                        });
+                      },
                       color: Theme.of(context).primaryColor,
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
