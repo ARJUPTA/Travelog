@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 
 //routes
 import trip from "./routes/trip";
+import auth from "./routes/auth"
 
 const app = express();
 // remove powered by cookie
@@ -27,6 +28,8 @@ app.use(urlencoded({ extended: true }));
 app.use(compression());
 // use cookie-parser for refresh token
 app.use(cookieParser());
+
 app.use("/trip", trip);
+app.use("/auth", auth);
 
 exports.api = functions.https.onRequest(app)
