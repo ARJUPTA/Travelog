@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:travelog/screens/newJourney.dart';
 import './screens/home.dart';
 import './screens/login.dart';
 import './screens/editDetail.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(child: CircularProgressIndicator());
-          return EditUserDetail();
+          return LoginPage();
         },
       ),
     );

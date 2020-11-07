@@ -21,6 +21,12 @@ class _EditUserDetailState extends State<EditUserDetail> {
             builder: (context, snapshot) {
               List<College> college = parseJosn(snapshot.data.toString());
               return Scaffold(
+                appBar: AppBar(
+                  title: Padding(
+                      padding: EdgeInsets.only(left: 10.0),
+                      child: Text('User Detail')),
+                  automaticallyImplyLeading: false,
+                ),
                 body: Form(
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -47,8 +53,8 @@ class _EditUserDetailState extends State<EditUserDetail> {
                                   },
                                   items: college.map((value) {
                                     return DropdownMenuItem<String>(
-                                      value: value.toString(),
-                                      child: Text(value.toString()),
+                                      value: value.name,
+                                      child: Text(value.name),
                                     );
                                   }).toList(),
                                 ),
