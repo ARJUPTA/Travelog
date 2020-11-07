@@ -1,4 +1,4 @@
-import { newToken , User } from "../middlewares/auth"
+import { newToken } from "../middlewares/auth"
 import { db } from "../services/firebase"
 import { NextFunction, Request, Response } from "express"
 
@@ -34,7 +34,8 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
     }
 
     delete req.body.idToken
-    const user: User = { ...req.body };
+    const user = { ...req.body };
+    console.log(user);
     await db.collection('accounts').doc(req.body.uid).set(user);
     const token = newToken(user)
     return res.status(201).json({token})

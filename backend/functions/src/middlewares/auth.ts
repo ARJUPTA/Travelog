@@ -8,8 +8,6 @@ export interface User {
 	institution: string,
 	uid: string,
 	privacy?: boolean,
-	profile_pic?: string,
-	phone_number?: string,
 	email: string
 }
 
@@ -34,7 +32,6 @@ export const verfiyIDToken = async (req: Request, res: Response, next: NextFunct
 				}
 			}
 
-			req.body.profile_pic = providerData.filter(userInfo => !!userInfo.photoURL)[0] ?? null;
 			req.body.email = email;
 			req.body.uid = decodedToken.uid;
 			req.body.email_verified = emailVerified;
