@@ -12,6 +12,7 @@ import cookieParser from "cookie-parser";
 import trip from "./routes/trip";
 import auth from "./routes/auth"
 import user from "./routes/user"
+import group from "./routes/chat"
 
 const app = express();
 // remove powered by cookie
@@ -34,6 +35,7 @@ app.use(cookieParser());
 app.use("/trip", trip);
 app.use("/auth", auth);
 app.use("/user", user);
+app.use("/group", group);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
