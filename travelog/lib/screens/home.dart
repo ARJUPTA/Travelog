@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.cyan[200],
         leading: IconButton(
           onPressed: () => {},
+          // TODO: change it to account avatar (not an icon)
           icon: Icon(Icons.account_circle),
           iconSize: 42.0,
         ),
