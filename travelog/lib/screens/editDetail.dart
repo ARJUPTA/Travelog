@@ -1,81 +1,107 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
-import 'collegeList.dart';
+import 'package:http/http.dart' as http;
 
 class EditUserDetail extends StatefulWidget {
-  final List<College> college;
-  EditUserDetail({Key key, this.college}) : super(key: key);
   @override
   _EditUserDetailState createState() => _EditUserDetailState();
 }
 
 class _EditUserDetailState extends State<EditUserDetail> {
-  @override
-  Widget build(BuildContext context) {
-    var _college;
-    return Container(
-        child: FutureBuilder(
-            future: DefaultAssetBundle.of(context)
-                .loadString('assets/college_list.json'),
-            builder: (context, snapshot) {
-              List<College> college = parseJosn(snapshot.data.toString());
-              return Scaffold(
-                appBar: AppBar(
-                  title: Padding(
-                      padding: EdgeInsets.only(left: 10.0),
-                      child: Text('User Detail')),
-                  automaticallyImplyLeading: false,
-                ),
-                body: Form(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: <Widget>[
-                        DropdownButtonHideUnderline(
-                          child: new Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              new InputDecorator(
-                                decoration: InputDecoration(
-                                  filled: false,
-                                  hintText: 'Choose College',
-                                  labelText: 'College',
-                                ),
-                                isEmpty: _college == null,
-                                child: new DropdownButton<String>(
-                                  value: _college,
-                                  isDense: true,
-                                  onChanged: (String newValue) {
-                                    setState(() {
-                                      _college = newValue;
-                                    });
-                                  },
-                                  items: college.map((value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value.name,
-                                      child: Text(value.name),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            }));
+  String _college;
+  final String url = 'https://api.jsonbin.io/b/5fa6d20b48818715939d73b0';
+
+  List college = List();
+
+  Future<void> getCollegeList() async {
+    var res = await http
+        .get(Uri.encodeFull(url), headers: {"Accept": "application/json"});
+    var resBody = json.decode(res.body);
+    setState(() {
+      college = resBody;
+    });
   }
 
-  List<College> parseJosn(String response) {
-    if (response == null) {
-      return [];
-    }
-    final parsed =
-        json.decode(response.toString()).cast<Map<String, dynamic>>();
-    return parsed.map<College>((json) => new College.fromJson(json)).toList();
+  @override
+  void initState() {
+    super.initState();
+    this.getCollegeList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+            padding: EdgeInsets.only(left: 10.0), child: Text('User Detail')),
+        automaticallyImplyLeading: false,
+      ),
+      body: Form(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Name'),
+                onSaved: (value) => {},
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Username'),
+                onSaved: (value) => {},
+              ),
+              DropdownButtonHideUnderline(
+                child: new Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    new InputDecorator(
+                      decoration: InputDecoration(
+                        filled: false,
+                        hintText: 'Choose College',
+                        labelText: 'College',
+                      ),
+                      isEmpty: _college == null,
+                      child: new DropdownButton<String>(
+                        value: _college,
+                        isDense: true,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            _college = newValue;
+                          });
+                        },
+                        items: college.map((value) {
+                          return DropdownMenuItem<String>(
+                            value: value['id'].toString(),
+                            child: Text(value['name'] ?? ""),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    RaisedButton(
+                      onPressed: () => {},
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(Icons.save),
+                          SizedBox(width: 8),
+                          Text('Save Details'),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
