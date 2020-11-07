@@ -4,18 +4,18 @@ import { NextFunction, Request, Response } from "express"
 
 export const signin = async (req: Request, res: Response, next: NextFunction):Promise<Response|void> => {
   try {
-    const user:unknown = await db.collection("accounts").where("uid", "==", req.body.uid).get();
+    const snapshot = await db.collection("accounts").doc(req.body.uid).get();
 
     // User doesn't exist 404
-		if (!user) {
+		if (!snapshot.exists || !snapshot.data()) {
 			return res.status(404).send("User not registered");
 		}
 		// User isn't verified 401
 		if (!req.body.email_verified) {
 			return res.status(401).json({ "message": "User not Verified" });
 		}
-
-    const token = newToken((user as User));
+    const user:any = snapshot.data()
+    const token = newToken(user);
     return res.status(200).send({ token });
   }
   catch (e) {
@@ -35,7 +35,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
 
     delete req.body.idToken
     const user: User = { ...req.body };
-    await db.collection('accounts').add(user);
+    await db.collection('accounts').doc(req.body.uid).set(user);
     const token = newToken(user)
     return res.status(201).json({token})
   } catch (e) {

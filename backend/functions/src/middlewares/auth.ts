@@ -80,8 +80,8 @@ export const protect = async (req: Request, res: Response, next: NextFunction):P
 		if (!payload?.uid)
 			return res.status(404);
 
-		const user = await db.collection("accounts").where("uid","==",payload.uid);
-		req.body.user = user;
+		const user = await db.collection("accounts").doc(payload.uid).get();
+		req.body.user = user.data();
 		next();
 	} catch (error) {
 		if (error.name === "JsonWebTokenError")
