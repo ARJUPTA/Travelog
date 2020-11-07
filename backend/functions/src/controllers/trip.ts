@@ -10,7 +10,9 @@ export const getAllTrips = async (req: Request, res: Response) => {
     snapshot.forEach((doc) => {
       trips.push({ id: doc.ref.id, ...doc.data() });
     });
-    res.status(200).send(JSON.stringify(trips));
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.send(trips);
   } catch (err) {
     console.log(err);
     res.statusCode = 404;
@@ -126,7 +128,10 @@ export const getUserTrips = async (req: Request, res: Response) => {
     snapshot.forEach((doc) => {
       trips.push({ id: doc.ref.id, ...doc.data() });
     });
-    res.status(200).send(JSON.stringify(trips));
+    console.log("tirps", trips);
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.send(trips);
   } catch (err) {
     console.log(err);
     res.statusCode = 404;
