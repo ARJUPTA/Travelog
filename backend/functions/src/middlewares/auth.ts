@@ -68,19 +68,16 @@ export const newToken = (user:User) => {
 
 // check header for authorization token prefixed with Bearer and then fetch user and add to request object
 export const protect = async (req: Request, res: Response, next: NextFunction):Promise<Response|void> => {
-	const token = req.headers.authorization
-
+	const token = req.headers.authorization ?? null
 	if (!token) return res.status(401).json({ message: "No Token Provided" });
-
 	const [identity, tokenVal] = token.split(" ");
 	if (identity !== "Bearer") return res.status(401).end();
 
 	try {
 		const payload = await verifyToken(tokenVal);
-		if (!payload?.uid)
+		if (!payload?.id)
 			return res.status(404);
-
-		const user = await db.collection("accounts").doc(payload.uid).get();
+		const user = await db.collection("accounts").doc(payload.id).get();
 		req.body.user = user.data();
 		next();
 	} catch (error) {
