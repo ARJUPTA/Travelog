@@ -16,6 +16,58 @@ export const getAllTrips = async (req: Request, res: Response) => {
     res.send("Not found");
   }
 };
+export const getTrip = async (req: Request, res: Response) => {
+  try {
+    const doc = await db.collection("trip").doc(req.params.id).get();
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(doc.data())
+  } catch (err) {
+    console.log(err);
+    res.statusCode = 404;
+    res.send("Not found");
+  }
+};
+export const updateTrip = async (req: Request, res: Response) => {
+  try {
+    const tripRef = db.collection("trip").doc(req.params.id);
+    await tripRef.update(req.body);
+    const updatedTrip = await db.collection("trip").doc(req.params.id).get();
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.send(updatedTrip);
+  } catch(err) {
+    console.log(err);
+    res.statusCode = 400;
+    res.send("Error performing the update operation");
+  }
+};
+export const deleteTrip = async (req: Request, res: Response) => {
+  try {
+    const tripRef = db.collection("trip").doc(req.params.id);
+    tripRef.delete();
+  } catch (err) {
+    console.log(err);
+    res.statusCode = 400;
+    res.send("Error performing the delete operation");
+  }
+};
+ export const isCreator = async (req: Request, res: Response, next: any) => {
+  try {
+    const user = req.body.user;
+    const trip = await db.collection("trip").doc(req.params.id).get();
+    const tripData = trip.data() as FirebaseFirestore.DocumentData;
+    if(user.uid === tripData.creator) {
+      next();
+    } else {
+      res.statusCode = 403;
+      res.send("Only creator can modify/delete the trip");
+    }
+  } catch (err) {
+    res.statusCode = 400;
+    res.send("Error performing the delete operation!");
+  }
+};
 export const forbidden = (req: Request, res: Response) => {
   res.statusCode = 403;
   res.send("End point is not supported!");
