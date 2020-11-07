@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 //routes
 import trip from "./routes/trip";
 import auth from "./routes/auth"
+import user from "./routes/user"
 
 const app = express();
 // remove powered by cookie
@@ -31,5 +32,6 @@ app.use(cookieParser());
 
 app.use("/trip", trip);
 app.use("/auth", auth);
+app.use("/user", user);
 
 exports.api = functions.https.onRequest(app)
