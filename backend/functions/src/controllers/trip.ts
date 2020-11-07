@@ -74,12 +74,12 @@ export const createTrip = async (req: Request, res: Response):Promise<Response|v
       res.send(response)
     }
   } else {
-    const trip = {depart_date:req.body.date, from:req.body.from, to:req.body.to, time:req.body.time, refCode:req.body.refCode}
+    const trip = {depart_date:req.body.boardingDate, from:req.body.from, to:req.body.to, refCode:req.body.refCode}
     const response:any = await getFlightData({ ...trip });
     if (!response)
       return res.status(404);
 
-    const data = await tripCollRef.add({...trip,duartion:response.totalDurationInMinutes,end:response.lastArrival})
+    const data = await tripCollRef.add({...trip,duartion:response.totalDurationInMinutes,end:response.lastArrival,creator: req.body.user.uid})
     return res.status(201).json(data)
   }
 };
