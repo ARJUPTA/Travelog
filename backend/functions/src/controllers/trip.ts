@@ -30,36 +30,12 @@ export const getTrip = async (req: Request, res: Response) => {
 };
 export const createTrip = async (req: Request, res: Response) => {
   const tripCollRef = db.collection("trip");
-  const pnrData = await validatePnr(req.body.pnr);
-  res.setHeader('Content-Type', 'application/json');
-  let response = {};
-  if(pnrData) {
-    try {
-      console.log(pnrData);
-      pnrData.creator = req.body.user.uid;
-      const tripRef = await tripCollRef.add(pnrData);
-      const trip = await tripRef.get();
-      res.statusCode = 200;
-      response = {
-        "success": true,
-        "trip": trip.data()
-      }
-    } catch (err) {
-      console.log(err);
-      res.statusCode = 400;
-      response = {
-        "success": false,
-        "error": "PNR validated but trip creation failed"
-      }
-    }
-  } else {
-    res.statusCode = 400;
-    res.setHeader('Content-Type', 'application/json');
-    response = {
-      "success": false,
-      "error": "Invalid PNR."
-    }
-    res.send(response);
+  const journeyType = req.body.journeyType;
+  // complete the trip creation and add new trip to doc we will refactor later on for redundancy.
+  if(journeyType == "T") {
+
+  } else if(journeyType == "F") {
+
   }
 };
 export const updateTrip = async (req: Request, res: Response) => {
