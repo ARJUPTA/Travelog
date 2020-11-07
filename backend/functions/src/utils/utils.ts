@@ -16,30 +16,6 @@ export const getDayFromIsoDate: (dateString: string) => string | boolean = (
     return false;
   }
 };
-
-// Returns details of pnr else returns false
-export const validatePnr = async (pnr: string) => {
-  const options: AxiosRequestConfig = {
-    method: "GET",
-    url: `https://pnr-status-indian-railway.p.rapidapi.com/rail/${pnr}`,
-    headers: {
-      "x-rapidapi-key": "2920326c74msh76b3d11efcebf53p1fbc5ajsn2eadf9d76347",
-      "x-rapidapi-host": "pnr-status-indian-railway.p.rapidapi.com",
-    },
-  };
-  try {
-    const response = await axios.request(options);
-    const data = response.data;
-    if ("error" in data) {
-      return false;
-    } else {
-      return data;
-    }
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-};
 export const validateTrainTrip = async (req: Request) => {
   const fromStationCode = req.body.from;
   const toStationCode = req.body.to;
@@ -49,8 +25,6 @@ export const validateTrainTrip = async (req: Request) => {
   let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
   let year = date_ob.getFullYear();
   const requestUrl = `https://www.irctc.co.in/eticketing/protected/mapps1/tbstns/${fromStationCode}/${toStationCode}/${year}${month}${date}?dateSpecific=N&ftBooking=N&redemBooking=N&journeyType=GN&captcha=`
-  console.log("requestUrl", requestUrl);
-  console.log(trainNumber);
   const options: AxiosRequestConfig = {
     method: "GET",
     url: requestUrl,
