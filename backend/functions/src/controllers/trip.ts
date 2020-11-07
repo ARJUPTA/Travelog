@@ -40,13 +40,13 @@ export const createTrip = async (req: Request, res: Response):Promise<Response|v
     const toStationCode = req.body.to;
 
     res.setHeader('Content-Type', 'application/json');
+    console.log("checking", await validateTrainTrip(req));
     if(await validateTrainTrip(req)) {
       const newTripData = {
         from: fromStationCode,
         to: toStationCode,
-        trainNumber: req.body.trainNumber,
+        trainNumber: req.body.refCode,
         boardingDate: req.body.boardingDate,
-        journeyEndingDate: req.body.journeyEndingDate,
         creator: req.body.user.uid
       }
       try {

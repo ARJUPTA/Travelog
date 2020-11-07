@@ -41,42 +41,35 @@ export const validatePnr = async (pnr: string) => {
   }
 };
 export const validateTrainTrip = async (req: Request) => {
-  const boardingDay = "running" + getDayFromIsoDate(req.body.boardingDate);
   const fromStationCode = req.body.from;
   const toStationCode = req.body.to;
-  const trainNumber = req.body.trainNumber;
+  const trainNumber = req.body.refCode;
   const date_ob = new Date(req.body.boardingDate);
   let date = ("0" + date_ob.getDate()).slice(-2);
   let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
   let year = date_ob.getFullYear();
-  const requestUrl = `https://www.irctc.co.in/eticketing/protected/mapps1/tbstns/${fromStationCode}/${toStationCode}/${year}${month}${date}?dateSpecific=Y&ftBooking=N&redemBooking=N&journeyType=GN&captcha=`;
+  const requestUrl = `https://www.irctc.co.in/eticketing/protected/mapps1/tbstns/${fromStationCode}/${toStationCode}/${year}${month}${date}?dateSpecific=N&ftBooking=N&redemBooking=N&journeyType=GN&captcha=`
   console.log("requestUrl", requestUrl);
   console.log(trainNumber);
-  console.log(boardingDay);
   const options: AxiosRequestConfig = {
     method: "GET",
     url: requestUrl,
     headers: {
-      greq: "1604739383672",
+      greq: "1604773426539"
     },
   };
   try {
     const response = await axios.request(options);
     console.log(response.status);
-    const alternateTrainBtwnStnsList = response.data.alternateTrainBtwnStnsList;
-    alternateTrainBtwnStnsList.forEach((train: any) => {
-      console.log('train:', train);
-      console.log(console.log("train[boardingDay]",train[boardingDay]));
-      if (train.trainNumber === trainNumber) {
-        console.log("hello", train.trainNumber)
-        if (train[boardingDay] === "Y") {
-          return true;
-        } else {
-          return false;
-        }
+    const trainBtwnStnsList = response.data.trainBtwnStnsList;
+    let flag = false;
+    for(let i=0;i<trainBtwnStnsList.length;i++) {
+      if (trainBtwnStnsList[i].trainNumber === trainNumber) {
+        flag = true;
+        break;
       }
-    });
-    return false;
+    };
+    return flag;
   } catch (err) {
     console.log(err);
     return false;
