@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { db } from "../services/firebase";
-import { validatePnr } from "../utils/utils";
+import { getFlightData } from "../utils/airline"
+
 
 export const getAllTrips = async (req: Request, res: Response) => {
   const trips: any[] = [];
@@ -28,13 +29,20 @@ export const getTrip = async (req: Request, res: Response) => {
     res.send("Not found");
   }
 };
-export const createTrip = async (req: Request, res: Response) => {
+export const createTrip = async (req: Request, res: Response):Promise<Response|void> => {
   const tripCollRef = db.collection("trip");
   const journeyType = req.body.journeyType;
   // complete the trip creation and add new trip to doc we will refactor later on for redundancy.
-  if(journeyType == "T") {
+  if(journeyType === "T") {
+    return res.sendStatus(200);
+  } else {
+    const trip = {depart_date:req.body.date, from:req.body.from, to:req.body.to, time:req.body.time, refCode:req.body.refCode}
+    const response:any = await getFlightData({ ...trip });
+    if (!response)
+      return res.status(404);
 
-  } else if(journeyType == "F") {
+    const data = await tripCollRef.add({...trip,duartion:response.totalDurationInMinutes,end:response.lastArrival})
+    return res.status(201).json(data)
 
   }
 };
@@ -55,7 +63,7 @@ export const updateTrip = async (req: Request, res: Response) => {
 export const deleteTrip = async (req: Request, res: Response) => {
   try {
     const tripRef = db.collection("trip").doc(req.params.id);
-    tripRef.delete();
+    await tripRef.delete();
   } catch (err) {
     console.log(err);
     res.statusCode = 400;
@@ -65,7 +73,7 @@ export const deleteTrip = async (req: Request, res: Response) => {
 export const getUserTrips = async (req: Request, res: Response) => {
   const trips: any[] = [];
   try {
-    const snapshot = await db.collection("trip").where("creator" , "==", req.body.user.id).get();
+    const snapshot = await db.collection("trip").where("creator" , "==", req.body.user.uid).get();
 
     snapshot.forEach((doc: { data: () => any }) => {
       trips.push(doc.data());
@@ -79,10 +87,10 @@ export const getUserTrips = async (req: Request, res: Response) => {
 };
 export const deleteUserTrips = async (req: Request, res: Response) => {
   try {
-    const snapshot = await db.collection("trip").where("creator", "==", req.body.user.id).get();
-    snapshot.forEach( doc => {
-      let docRef = doc.ref;
-      docRef.delete();
+    const snapshot = await db.collection("trip").where("creator", "==", req.body.user.uid).get();
+    snapshot.forEach( async doc => {
+      const docRef = doc.ref;
+      await docRef.delete();
     });
     res.statusCode = 200;
     res.send("Successfully deleted the trips!");
