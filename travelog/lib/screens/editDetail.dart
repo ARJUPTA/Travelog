@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:travelog/providers/fireauth.dart';
+import 'package:travelog/screens/home.dart';
 
 class EditUserDetail extends StatefulWidget {
+  EditUserDetail({this.token, this.email, this.pass});
+  final String token;
+  final String email;
+  final String pass;
   @override
   _EditUserDetailState createState() => _EditUserDetailState();
 }
 
 class _EditUserDetailState extends State<EditUserDetail> {
-  String _college;
+  String _college, _username, _name;
+  final _formKey = GlobalKey<FormState>();
   final String url = 'https://api.jsonbin.io/b/5fa6d20b48818715939d73b0';
 
   List college = List();
@@ -38,20 +45,21 @@ class _EditUserDetailState extends State<EditUserDetail> {
         automaticallyImplyLeading: false,
       ),
       body: Form(
+        key: _formKey,
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: <Widget>[
               TextFormField(
                 decoration: InputDecoration(labelText: 'Name'),
-                onSaved: (value) => {},
+                onSaved: (value) => {_name = value},
               ),
               SizedBox(
                 height: 8,
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Username'),
-                onSaved: (value) => {},
+                onSaved: (value) => {_username = value},
               ),
               DropdownButtonHideUnderline(
                 child: new Column(
@@ -84,7 +92,29 @@ class _EditUserDetailState extends State<EditUserDetail> {
                       height: 15.0,
                     ),
                     RaisedButton(
-                      onPressed: () => {},
+                      onPressed: () {
+                        if (_formKey.currentState.validate()) {
+                          _formKey.currentState.save();
+                          FireAuth()
+                              .signup(
+                                  token: widget.token,
+                                  username: _username,
+                                  name: _name,
+                                  college: _college,
+                                  email: widget.email,
+                                  pass: widget.pass)
+                              .then((result) {
+                            if (result) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => HomePage(
+                                  key: Key(_name),
+                                  title: _name,
+                                ),
+                              ));
+                            }
+                          });
+                        }
+                      },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
