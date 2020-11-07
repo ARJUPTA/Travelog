@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
@@ -16,7 +17,10 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.cyan[200],
         leading: IconButton(
-          onPressed: () => {},
+          onPressed: () async {
+            await FirebaseAuth.instance.signOut();
+            Navigator.of(context).pop();
+          },
           // TODO: change it to account avatar (not an icon)
           icon: Icon(Icons.account_circle),
           iconSize: 42.0,

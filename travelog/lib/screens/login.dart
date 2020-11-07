@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:travelog/screens/editDetail.dart';
 import '../providers/fireauth.dart';
 import 'home.dart';
 
@@ -10,16 +11,56 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isLoggedIn;
+  final _formKey = GlobalKey<FormState>();
   FireAuth _authMethods = FireAuth();
+  String email, pass;
   init() async {
     isLoggedIn = await _authMethods.isLoggedIn();
     setState(() {});
+  }
+
+  Widget dialog(String message, String token) {
+    return SimpleDialog(
+      title: Text(
+        "UH OH!",
+        textAlign: TextAlign.center,
+      ),
+      contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+      children: [
+        Text(
+          message ?? "",
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 20),
+        Visibility(
+          visible: token != null,
+          child: FlatButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return EditUserDetail(
+                        email: email,
+                        pass: pass,
+                      );
+                    },
+                  ),
+                );
+              },
+              child: Text(
+                "Create New One",
+                style: TextStyle(color: Colors.blue),
+              )),
+        )
+      ],
+    );
   }
 
   @override
   void initState() {
     super.initState();
     init();
+    email = pass = "";
   }
 
   @override
@@ -50,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                       width: MediaQuery.of(context).size.width * 0.75,
                       padding: EdgeInsets.all(16.0),
                       child: Form(
+                        key: _formKey,
                         child: SingleChildScrollView(
                           child: Column(
                             children: <Widget>[
@@ -61,8 +103,9 @@ class _LoginPageState extends State<LoginPage> {
                                   if (value.isEmpty || !value.contains('@')) {
                                     return 'Invalid email!';
                                   }
+                                  return null;
                                 },
-                                onSaved: (value) => {},
+                                onSaved: (value) => {email = value},
                               ),
                               TextFormField(
                                 decoration:
@@ -72,14 +115,55 @@ class _LoginPageState extends State<LoginPage> {
                                   if (value.isEmpty || value.length < 8) {
                                     return 'Password is too short!';
                                   }
+                                  return null;
                                 },
-                                onSaved: (value) => {},
+                                onSaved: (value) => {pass = value},
                               ),
                               SizedBox(
                                 height: 20,
                               ),
                               RaisedButton(
-                                onPressed: () => {},
+                                onPressed: () {
+                                  if (_formKey.currentState.validate()) {
+                                    _formKey.currentState.save();
+                                    _authMethods
+                                        .signInWithEmail(email, pass)
+                                        .then((result) {
+                                      if (result != null) {
+                                        if (result == "not_found") {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return dialog(
+                                                  "No Account Exists With This Email",
+                                                  "token");
+                                            },
+                                          );
+                                        } else {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) {
+                                                return HomePage(
+                                                  key: Key(result),
+                                                  title: result,
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        }
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return dialog(
+                                                "Wrong Username Or Password",
+                                                null);
+                                          },
+                                        );
+                                      }
+                                    });
+                                  }
+                                },
                                 color: Theme.of(context).primaryColor,
                                 child: Text(
                                   'Sign In',
@@ -112,16 +196,28 @@ class _LoginPageState extends State<LoginPage> {
                                       .signInWithGoogle()
                                       .then((result) {
                                     if (result != null) {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return HomePage(
-                                              key: Key(result),
-                                              title: result,
-                                            );
-                                          },
-                                        ),
-                                      );
+                                      if (result['result'] == "not_found") {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) {
+                                              return EditUserDetail(
+                                                token: result['token'],
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      } else {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) {
+                                              return HomePage(
+                                                key: Key(result['result']),
+                                                title: result['result'],
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      }
                                     }
                                   });
                                 },
