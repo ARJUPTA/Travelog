@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { db } from "../services/firebase";
 import { getFlightData } from "../utils/airline"
-
+import { validateTrainTrip } from "../utils/utils";
 
 export const getAllTrips = async (req: Request, res: Response) => {
   const trips: any[] = [];
@@ -32,9 +32,47 @@ export const getTrip = async (req: Request, res: Response) => {
 export const createTrip = async (req: Request, res: Response):Promise<Response|void> => {
   const tripCollRef = db.collection("trip");
   const journeyType = req.body.journeyType;
+  console.log("body:\n",req.body);
+  console.log("journeyType = ",journeyType);
   // complete the trip creation and add new trip to doc we will refactor later on for redundancy.
   if(journeyType === "T") {
-    return res.sendStatus(200);
+    const fromStationCode = req.body.from;
+    const toStationCode = req.body.to;
+
+    res.setHeader('Content-Type', 'application/json');
+    if(await validateTrainTrip(req)) {
+      const newTripData = {
+        from: fromStationCode,
+        to: toStationCode,
+        trainNumber: req.body.trainNumber,
+        boardingDate: req.body.boardingDate,
+        journeyEndingDate: req.body.journeyEndingDate,
+        creator: req.body.user.uid
+      }
+      try {
+        const newTripRef = await tripCollRef.add(newTripData);
+        res.statusCode = 200;
+        const responseData = {
+          "success": true,
+          ...((await newTripRef.get()).data())
+        }
+        res.send(responseData);
+      } catch(err) {
+        console.log(err);
+        const responseData = {
+          "success": false,
+          "error": "Valid journey detils but couldn't create trip."
+        }
+        res.statusCode = 400;
+        res.send(responseData);
+      }
+    } else {
+      const response = {
+        "success": false,
+        "error": "Invalid journey details!"
+      }
+      res.send(response)
+    }
   } else {
     const trip = {depart_date:req.body.date, from:req.body.from, to:req.body.to, time:req.body.time, refCode:req.body.refCode}
     const response:any = await getFlightData({ ...trip });
@@ -43,7 +81,6 @@ export const createTrip = async (req: Request, res: Response):Promise<Response|v
 
     const data = await tripCollRef.add({...trip,duartion:response.totalDurationInMinutes,end:response.lastArrival})
     return res.status(201).json(data)
-
   }
 };
 export const updateTrip = async (req: Request, res: Response) => {
