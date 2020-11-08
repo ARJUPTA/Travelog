@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:skeleton_text/skeleton_text.dart';
+import 'package:travelog/providers/backend.dart';
+import 'package:travelog/providers/fireauth.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title = ""}) : super(key: key);
@@ -11,6 +12,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Group> groups = [];
+  init() async {
+    var result = await getMyGroups("list");
+    if (result != null)
+      setState(() {
+        print(result);
+        // groups = result;
+        // print(groups);
+      });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +37,7 @@ class _HomePageState extends State<HomePage> {
         leading: IconButton(
           onPressed: () async {
             await FirebaseAuth.instance.signOut();
+            await FireAuth().signOutGoogle();
             Navigator.of(context).pop();
           },
           // TODO: change it to account avatar (not an icon)
@@ -57,6 +76,7 @@ class _HomePageState extends State<HomePage> {
               color: Colors.cyan[200],
             ),
             ListView(
+              shrinkWrap: true,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(15.0),

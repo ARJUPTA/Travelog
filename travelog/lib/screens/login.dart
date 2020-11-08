@@ -196,6 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                                       .signInWithGoogle()
                                       .then((result) {
                                     if (result != null) {
+                                      print(result['result']);
                                       if (result['result'] == "not_found") {
                                         Navigator.of(context).push(
                                           MaterialPageRoute(

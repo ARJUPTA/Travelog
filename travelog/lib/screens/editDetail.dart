@@ -82,7 +82,7 @@ class _EditUserDetailState extends State<EditUserDetail> {
                         },
                         items: college.map((value) {
                           return DropdownMenuItem<String>(
-                            value: value['id'].toString(),
+                            value: value['name'] ?? "",
                             child: Text(value['name'] ?? ""),
                           );
                         }).toList(),
@@ -104,14 +104,13 @@ class _EditUserDetailState extends State<EditUserDetail> {
                                   email: widget.email,
                                   pass: widget.pass)
                               .then((result) {
-                            if (result) {
+                            if (result)
                               Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => HomePage(
                                   key: Key(_name),
                                   title: _name,
                                 ),
                               ));
-                            }
                           });
                         }
                       },

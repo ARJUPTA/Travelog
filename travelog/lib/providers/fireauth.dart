@@ -38,18 +38,16 @@ class FireAuth {
 
       var preferences = await SharedPreferences.getInstance();
       String backToken = await backCall(idToken, "", "", "", "signin");
-      if (backToken != null)
+      if (backToken != null) {
         preferences.setString("token", backToken);
-      else {
+        result['result'] = '${user.displayName}';
+        return result;
+      } else {
         result['result'] = "not_found";
         result['token'] = idToken;
         return result;
       }
-      result['result'] = '${user.displayName}';
-
-      return result;
     }
-
     return null;
   }
 
@@ -127,11 +125,11 @@ class FireAuth {
     print(token);
     var preferences = await SharedPreferences.getInstance();
     String backToken = await backCall(token, username, name, college, "signup");
-    if (backToken != null)
+    if (backToken != null) {
       preferences.setString("token", backToken);
-    else
+      return true;
+    } else
       return false;
-    return true;
   }
 
   Future<String> backCall(String idToken, String username, String name,
