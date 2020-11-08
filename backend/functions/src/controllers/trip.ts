@@ -41,19 +41,17 @@ export const createTrip = async (
   if (journeyType === "T") {
     const fromStationCode = req.body.from;
     const toStationCode = req.body.to;
-    const boardingDate = new Date(req.body.boardingDate);
-    const endingDate = new Date(req.body.endingDate);
 
     res.setHeader("Content-Type", "application/json");
-    if (await validateTrainTrip(req)) {
+    const duration = await validateTrainTrip(req)
+    if (duration) {
       const newTripData = {
         from: fromStationCode,
         to: toStationCode,
         trainNumber: req.body.refCode,
         boardingDate: req.body.boardingDate,
-        duration: getTimeDelta(boardingDate, endingDate),
         creator: req.body.user.uid,
-        endingDate: req.body.endingDate
+        duration: duration,
       };
       try {
         const newTripRef = await tripCollRef.add(newTripData);
@@ -88,14 +86,17 @@ export const createTrip = async (
     };
     const response: any = await getFlightData({ ...trip });
     if (!response) return res.status(404);
-
+    const durationinMins = response.totalDurationInMinutes;
+    let hrs = Math.floor(durationinMins/60).toString();
+    let mins = (durationinMins%60).toString();
+    hrs = ("0" + hrs).slice(-2);
+    mins = ("0" + mins).slice(-2);
     const data = await tripCollRef.add({
       ...trip,
-      duartion: response.totalDurationInMinutes,
-      end: response.lastArrival,
+      duartion: hrs + ":" + mins,
       creator: req.body.user.uid,
     });
-    return res.status(201).json(data);
+    return res.status(200).json((await data.get()).data());
   }
 };
 export const updateTrip = async (req: Request, res: Response) => {

@@ -42,7 +42,7 @@ export const validateTrainTrip = async (req: Request) => {
     method: "GET",
     url: requestUrl,
     headers: {
-      greq: "1604773426539"
+      greq: "DM08AP39MS4:d002b717-3f2d-40bf-9a52-e2e2dd3403fc"
     },
   };
   try {
@@ -53,7 +53,7 @@ export const validateTrainTrip = async (req: Request) => {
     for(let i=0;i<trainBtwnStnsList.length;i++) {
       if (trainBtwnStnsList[i].trainNumber === trainNumber) {
         flag = true;
-        break;
+        return trainBtwnStnsList[i].duration;
       }
     };
     return flag;
