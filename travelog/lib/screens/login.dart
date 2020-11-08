@@ -248,6 +248,9 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ],
               )
-            : HomePage();
+            : HomePage(
+                key: Key("Travelog"),
+                title: "Travelog",
+              );
   }
 }

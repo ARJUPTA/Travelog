@@ -11,7 +11,7 @@ class Group {
   List<String> participants = [];
   Map<String, String> trip;
 
-  // Group(var response){
+  // Group(var response) {
   //   this.topic = response['topic'];
   //   this.participants = response['participants'];
   //   this.trip['boardingDate'] = response['trip']['boardingDate'];
@@ -21,6 +21,10 @@ class Group {
   //   this.trip['to'] = response['trip']['to'];
   //   this.trip['trainNumber'] = response['trip']['trainNumber'];
   // }
+
+  Group(String title) {
+    this.topic = title;
+  }
 
   Group.fromJson(var response) {
     this.topic = response['topic'];
