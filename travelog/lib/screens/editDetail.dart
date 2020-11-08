@@ -95,24 +95,20 @@ class _EditUserDetailState extends State<EditUserDetail> {
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
                           _formKey.currentState.save();
-                          FireAuth()
-                              .signup(
-                                  token: widget.token,
-                                  username: _username,
-                                  name: _name,
-                                  college: _college,
-                                  email: widget.email,
-                                  pass: widget.pass)
-                              .then((result) {
-                            if (result) {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => HomePage(
-                                  key: Key(_name),
-                                  title: _name,
-                                ),
-                              ));
-                            }
-                          });
+                          FireAuth().signup(
+                              token: widget.token,
+                              username: _username,
+                              name: _name,
+                              college: _college,
+                              email: widget.email,
+                              pass: widget.pass);
+
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => HomePage(
+                              key: Key(_name),
+                              title: _name,
+                            ),
+                          ));
                         }
                       },
                       child: Row(
