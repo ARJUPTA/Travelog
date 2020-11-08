@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {forbidden, getAllTrips, getTrip, updateTrip, createTrip, deleteTrip, getUserTrips, deleteUserTrips, isCreator} from "../controllers/trip"
+import {getAllTrips, getTrip, updateTrip, createTrip, deleteTrip, getUserTrips, deleteUserTrips, isCreator, forbidden} from "../controllers/trip"
 import { protect } from "../middlewares/auth";
 
 const router = Router();
@@ -12,16 +12,15 @@ router
   .delete(forbidden);
 router.use(protect);
 router
+  .route("/usr")
+  .get(getUserTrips)
+  .put(forbidden)
+  .post(createTrip)
+  .delete(deleteUserTrips);
+router
   .route("/:id")
   .get(getTrip)
   .put(isCreator, updateTrip)
   .post(forbidden)
   .delete(isCreator, deleteTrip);
-router
-  .route("/usr/:userId")
-  .get(getUserTrips)
-  .put(forbidden)
-  .post(createTrip)
-  .delete(deleteUserTrips);
-
 export default router;

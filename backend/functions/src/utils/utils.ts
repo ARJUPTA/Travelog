@@ -2,7 +2,20 @@ import axios, { AxiosRequestConfig } from "axios";
 import { Request } from "express";
 
 // Returns day as Mon, Tue, Wed, etc. from an Iso Date string.
-
+export const getTimeDelta = (date1:Date, date2:Date) => {
+  let secondDelta = Math.abs(date1.getTime() - date2.getTime());
+  const days = Math.floor(secondDelta/86400000);
+  secondDelta = secondDelta%86400000;
+  const hours = secondDelta/3600;
+  let durationString = "";
+  if( days > 0) {
+    durationString = durationString + days + "days";
+  }
+  if(hours > 0) {
+    durationString = durationString + " " +hours+ "hrs";
+  }
+  return durationString;
+}
 export const getDayFromIsoDate: (dateString: string) => string | boolean = (
   dateString: string
 ) => {

@@ -95,6 +95,7 @@ class _EditUserDetailState extends State<EditUserDetail> {
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
                           _formKey.currentState.save();
+<<<<<<< HEAD
                           FireAuth()
                               .signup(
                                   token: widget.token,
@@ -112,6 +113,22 @@ class _EditUserDetailState extends State<EditUserDetail> {
                                 ),
                               ));
                           });
+=======
+                          FireAuth().signup(
+                              token: widget.token,
+                              username: _username,
+                              name: _name,
+                              college: _college,
+                              email: widget.email,
+                              pass: widget.pass);
+
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => HomePage(
+                              key: Key(_name),
+                              title: _name,
+                            ),
+                          ));
+>>>>>>> origin/main
                         }
                       },
                       child: Row(

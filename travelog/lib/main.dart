@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:travelog/screens/newJourney.dart';
+import 'package:travelog/screens/profile.dart';
 import './screens/home.dart';
 import './screens/login.dart';
 import './screens/editDetail.dart';
@@ -30,6 +31,14 @@ class MyApp extends StatelessWidget {
           return LoginPage();
         },
       ),
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/home': (BuildContext context) => HomePage(),
+        '/detail': (BuildContext context) => EditUserDetail(),
+        '/profile': (BuildContext context) => ProfilePage(),
+        '/addJourney': (BuildContext context) => AddJourney(),
+      },
     );
   }
 }

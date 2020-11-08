@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, request } from "express";
 import { db } from "../services/firebase";
 import { getFlightData } from "../utils/airline";
-import { validateTrainTrip } from "../utils/utils";
+import { validateTrainTrip, getTimeDelta } from "../utils/utils";
 
 export const getAllTrips = async (req: Request, res: Response) => {
   const trips: any[] = [];
@@ -10,7 +10,9 @@ export const getAllTrips = async (req: Request, res: Response) => {
     snapshot.forEach((doc) => {
       trips.push({ id: doc.ref.id, ...doc.data() });
     });
-    res.status(200).send(JSON.stringify(trips));
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.send(trips);
   } catch (err) {
     console.log(err);
     res.statusCode = 404;
@@ -39,6 +41,9 @@ export const createTrip = async (
   if (journeyType === "T") {
     const fromStationCode = req.body.from;
     const toStationCode = req.body.to;
+    const boardingDate = new Date(req.body.boardingDate);
+    const endingDate = new Date(req.body.endingDate);
+
     res.setHeader("Content-Type", "application/json");
     if (await validateTrainTrip(req)) {
       const newTripData = {
@@ -46,7 +51,9 @@ export const createTrip = async (
         to: toStationCode,
         trainNumber: req.body.refCode,
         boardingDate: req.body.boardingDate,
+        duration: getTimeDelta(boardingDate, endingDate),
         creator: req.body.user.uid,
+        endingDate: req.body.endingDate
       };
       try {
         const newTripRef = await tripCollRef.add(newTripData);
@@ -92,13 +99,27 @@ export const createTrip = async (
   }
 };
 export const updateTrip = async (req: Request, res: Response) => {
+  if(req.body.journeyType) {
+    res.statusCode = 400;
+    res.send("Cannot change the journey type.")
+  }
   try {
     const tripRef = db.collection("trip").doc(req.params.id);
+    delete request.body.user;
     await tripRef.update(req.body);
-    const updatedTrip = await db.collection("trip").doc(req.params.id).get();
+    const updatedTrip = (await db.collection("trip").doc(req.params.id).get()).data() as FirebaseFirestore.DocumentData;
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json");
-    res.send(updatedTrip);
+    if (req.body.boardingDate || req.body.endingDate) {
+      const newDuration = getTimeDelta(new Date(updatedTrip.boardingDate), new Date(updatedTrip.endingDate))
+      const updatedDuration = {
+        "duration": newDuration
+      }
+      tripRef.update(updatedDuration);
+      res.send({...updatedTrip, "duration": newDuration});
+    } else {
+      res.send(updatedTrip);
+    }
   } catch (err) {
     console.log(err);
     res.statusCode = 400;
@@ -109,6 +130,9 @@ export const deleteTrip = async (req: Request, res: Response) => {
   try {
     const tripRef = db.collection("trip").doc(req.params.id);
     await tripRef.delete();
+    res.statusCode = 204;
+    res.setHeader("Content-Type", "application/json");
+    res.send({"success": true});
   } catch (err) {
     console.log(err);
     res.statusCode = 400;
@@ -126,7 +150,10 @@ export const getUserTrips = async (req: Request, res: Response) => {
     snapshot.forEach((doc) => {
       trips.push({ id: doc.ref.id, ...doc.data() });
     });
-    res.status(200).send(JSON.stringify(trips));
+    console.log("tirps", trips);
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json");
+    res.send(trips);
   } catch (err) {
     console.log(err);
     res.statusCode = 404;
