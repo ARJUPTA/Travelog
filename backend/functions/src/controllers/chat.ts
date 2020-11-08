@@ -43,5 +43,5 @@ export const getGroups = async (req: Request, res: Response, next: NextFunction)
     groups.push(doc.data());
   })
 
-  return res.status(200).send(JSON.stringify(groups));
+  return res.status(200).json({data:groups});
 }

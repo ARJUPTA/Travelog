@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction, request } from "express";
+import { Request, Response, NextFunction } from "express";
 import { db } from "../services/firebase";
 import { getFlightData } from "../utils/airline";
-import { validateTrainTrip, getTimeDelta } from "../utils/utils";
+import { validateTrainTrip } from "../utils/utils";
 
 export const getAllTrips = async (req: Request, res: Response) => {
   const trips: any[] = [];
@@ -59,14 +59,14 @@ export const createTrip = async (
         res.statusCode = 200;
         const responseData = {
           success: true,
-          ...(await newTripRef.get()).data(),
+          ...(await newTripRef.get()).data()
         };
         res.send(responseData);
       } catch (err) {
         console.log(err);
         const responseData = {
           success: false,
-          error: "Valid journey detils but couldn't create trip.",
+          error: "Valid journey detils but couldn't create trip."
         };
         res.statusCode = 400;
         res.send(responseData);
@@ -74,7 +74,7 @@ export const createTrip = async (
     } else {
       const response = {
         success: false,
-        error: "Invalid journey details!",
+        error: "Invalid journey details!"
       };
       res.send(response);
     }
@@ -83,7 +83,7 @@ export const createTrip = async (
       depart_date: req.body.boardingDate,
       from: req.body.from,
       to: req.body.to,
-      refCode: req.body.refCode,
+      refCode: req.body.refCode
     };
     const response: any = await getFlightData({ ...trip });
     if (!response) return res.status(404);
@@ -93,10 +93,13 @@ export const createTrip = async (
     hrs = ("0" + hrs).slice(-2);
     mins = ("0" + mins).slice(-2);
     const data = await tripCollRef.add({
-      ...trip,
-      duartion: hrs + ":" + mins,
-      creator: req.body.user.uid,
-      journeyType: journeyType
+      boardingDate: trip.depart_date,
+      trainNumber: trip.refCode,
+      from: req.body.from,
+      to: req.body.to,
+      duartion: response.totalDurationInMinutes,
+      endDate: (new Date(response.lastArrival)).toISOString(),
+      creator: req.body.user.uid
     });
     return res.status(200).json((await data.get()).data());
   }
