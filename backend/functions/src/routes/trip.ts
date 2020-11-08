@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {getAllTrips, getTrip, updateTrip, createTrip, deleteTrip, getUserTrips, deleteUserTrips, isCreator, forbidden} from "../controllers/trip"
+import {getAllTrips, getTrip, createTrip, deleteTrip, getUserTrips, deleteUserTrips, isCreator, forbidden} from "../controllers/trip"
 import { protect } from "../middlewares/auth";
 
 const router = Router();
@@ -20,7 +20,7 @@ router
 router
   .route("/:id")
   .get(getTrip)
-  .put(isCreator, updateTrip)
+  .put(forbidden)
   .post(forbidden)
   .delete(isCreator, deleteTrip);
 export default router;
