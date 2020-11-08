@@ -52,6 +52,7 @@ export const createTrip = async (
         boardingDate: req.body.boardingDate,
         creator: req.body.user.uid,
         duration: duration,
+        journeyType: journeyType
       };
       try {
         const newTripRef = await tripCollRef.add(newTripData);
@@ -95,38 +96,39 @@ export const createTrip = async (
       ...trip,
       duartion: hrs + ":" + mins,
       creator: req.body.user.uid,
+      journeyType: journeyType
     });
     return res.status(200).json((await data.get()).data());
   }
 };
-export const updateTrip = async (req: Request, res: Response) => {
-  if(req.body.journeyType) {
-    res.statusCode = 400;
-    res.send("Cannot change the journey type.")
-  }
-  try {
-    const tripRef = db.collection("trip").doc(req.params.id);
-    delete request.body.user;
-    await tripRef.update(req.body);
-    const updatedTrip = (await db.collection("trip").doc(req.params.id).get()).data() as FirebaseFirestore.DocumentData;
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "application/json");
-    if (req.body.boardingDate || req.body.endingDate) {
-      const newDuration = getTimeDelta(new Date(updatedTrip.boardingDate), new Date(updatedTrip.endingDate))
-      const updatedDuration = {
-        "duration": newDuration
-      }
-      tripRef.update(updatedDuration);
-      res.send({...updatedTrip, "duration": newDuration});
-    } else {
-      res.send(updatedTrip);
-    }
-  } catch (err) {
-    console.log(err);
-    res.statusCode = 400;
-    res.send("Error performing the update operation");
-  }
-};
+// export const updateTrip = async (req: Request, res: Response) => {
+//   if(req.body.journeyType) {
+//     res.statusCode = 400;
+//     res.send("Cannot change the journey type.")
+//   }
+//   try {
+//     const tripRef = db.collection("trip").doc(req.params.id);
+//     delete request.body.user;
+//     await tripRef.update(req.body);
+//     const updatedTrip = (await db.collection("trip").doc(req.params.id).get()).data() as FirebaseFirestore.DocumentData;
+//     res.statusCode = 200;
+//     res.setHeader("Content-Type", "application/json");
+//     if (req.body.boardingDate || req.body.endingDate) {
+//       const newDuration = getTimeDelta(new Date(updatedTrip.boardingDate), new Date(updatedTrip.endingDate))
+//       const updatedDuration = {
+//         "duration": newDuration
+//       }
+//       tripRef.update(updatedDuration);
+//       res.send({...updatedTrip, "duration": newDuration});
+//     } else {
+//       res.send(updatedTrip);
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.statusCode = 400;
+//     res.send("Error performing the update operation");
+//   }
+// };
 export const deleteTrip = async (req: Request, res: Response) => {
   try {
     const tripRef = db.collection("trip").doc(req.params.id);
