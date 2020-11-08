@@ -167,7 +167,7 @@ class FireAuth {
       if (responseData['error'] != null) {
         print(HttpException(responseData['error']['message']));
       } else
-        return responseData['idToken'];
+        return responseData['token'];
     } catch (error) {
       print(error);
     }

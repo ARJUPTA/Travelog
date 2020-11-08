@@ -11,7 +11,6 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   TabController tabController;
@@ -25,6 +24,7 @@ class _HomePageState extends State<HomePage>
         // print(groups);
       });
   }
+
   @override
   void initState() {
     tabController = TabController(length: 3, vsync: this);
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage>
           leading: IconButton(
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
-                          await FireAuth().signOutGoogle();
+              await FireAuth().signOutGoogle();
 
               Navigator.of(context).pop();
             },
@@ -81,19 +81,6 @@ class _HomePageState extends State<HomePage>
                 ),
                 color: Colors.cyan[200],
               ),
-<<<<<<< HEAD
-              color: Colors.cyan[200],
-            ),
-            ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Center(
-                    child: Text(
-                      'Current Journey',
-                      style: TextStyle(fontSize: 25.0),
-=======
               SizedBox(height: 15.0),
               Container(
                 padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
@@ -109,7 +96,6 @@ class _HomePageState extends State<HomePage>
                     Tab(text: 'My groups'),
                     Tab(
                       text: 'Join group',
->>>>>>> origin/main
                     ),
                   ],
                   controller: tabController,

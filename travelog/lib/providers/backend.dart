@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -43,13 +45,10 @@ Future getMyGroups(String urlSegment) async {
       'https://us-central1-travellog-bhu.cloudfunctions.net/api/auth/groups/list';
 
   try {
-    final response = await http.get(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-        'Authorization': 'Bearer $token'
-      },
-    );
+    final response = await http.get(url, headers: {
+      HttpHeaders.contentTypeHeader: "application/json",
+      HttpHeaders.authorizationHeader: "Bearer $token"
+    });
     final responseData = json.decode(response.body);
     print(responseData);
 
