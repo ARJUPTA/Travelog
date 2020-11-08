@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:travelog/providers/backend.dart';
 import 'package:travelog/providers/fireauth.dart';
 import 'package:travelog/screens/chat_screen.dart';
+import 'package:travelog/screens/profile.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title = ""}) : super(key: key);
@@ -17,7 +18,7 @@ class _HomePageState extends State<HomePage>
   TabController tabController;
   List<Group> groups = [new Group("Jan Shatabdi"), new Group("Gareeb Rath")];
   List<Group> dms = [
-    new Group("Arjun"),
+    new Group("Purshottam"),
     new Group("Lakshya"),
     new Group("Nishtha")
   ];
@@ -53,9 +54,9 @@ class _HomePageState extends State<HomePage>
           backgroundColor: Colors.cyan[200],
           leading: IconButton(
             onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              await FireAuth().signOutGoogle();
-              Navigator.of(context).pop();
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return ProfilePage();
+              }));
             },
             // TODO: change it to account avatar (not an icon)
             icon: Icon(Icons.account_circle),

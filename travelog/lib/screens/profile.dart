@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
+import 'package:travelog/providers/fireauth.dart';
+import 'package:travelog/screens/login.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -9,7 +12,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   var faker = new Faker();
   bool isVisible = true;
-
+  User user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -39,7 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Column(
                       children: <Widget>[
                         Text(
-                          faker.person.name(),
+                          user.displayName,
                           style: TextStyle(
                               fontSize: 22.0,
                               color: Colors.black,
@@ -47,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         SizedBox(height: 12),
                         Text(
-                          'Email: ' + faker.internet.email(),
+                          'Email: ' + user.email,
                           style: TextStyle(fontSize: 15.0, color: Colors.black),
                         ),
                         SizedBox(height: 8),
@@ -112,7 +115,14 @@ class _ProfilePageState extends State<ProfilePage> {
               width: MediaQuery.of(context).size.width - 120,
             ),
             RaisedButton(
-              onPressed: () => {},
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                await FireAuth().signOutGoogle();
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return LoginPage();
+                }));
+              },
               child: Text('Logout'),
             ),
           ],
