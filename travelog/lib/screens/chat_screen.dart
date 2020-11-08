@@ -8,6 +8,8 @@ User loggedInUser;
 
 class ChatScreen extends StatefulWidget {
   static const String id = "chat_screen";
+  ChatScreen({this.collection});
+  final String collection;
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -71,7 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            MyMessagesStream(),
+            MyMessagesStream(widget.collection),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -93,7 +95,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         'text': messageText,
                         'time': DateTime.now().toUtc().millisecondsSinceEpoch,
                       };
-                      _firestore.collection('Messages').add(data);
+                      _firestore.collection(widget.collection).add(data);
                       msgTextController.clear();
                     },
                     child: Text(
@@ -112,10 +114,12 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MyMessagesStream extends StatelessWidget {
+  final String collection;
+  MyMessagesStream(this.collection);
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('Messages').orderBy('time').snapshots(),
+      stream: _firestore.collection(collection).orderBy('time').snapshots(),
       builder: (context, snapshot) {
         List<Widget> widgets = [];
         if (!snapshot.hasData) {

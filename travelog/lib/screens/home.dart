@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage>
     new Group("Nishtha")
   ];
   List<Group> more = [
-    new Group(""),
+    new Group("Rajdhani"),
     new Group("Jan Shatabdi"),
     new Group("Gareeb Rath")
   ];
@@ -123,7 +123,8 @@ class _HomePageState extends State<HomePage>
                               return GestureDetector(
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => ChatScreen()));
+                                      builder: (context) => ChatScreen(
+                                          collection: dms[index].topic)));
                                 },
                                 child: ListTile(
                                     leading: Icon(Icons.person),
@@ -149,8 +150,18 @@ class _HomePageState extends State<HomePage>
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               return ListTile(
-                                  leading: Icon(Icons.person),
-                                  title: Text(more[index].topic ?? ""));
+                                leading: Icon(Icons.person),
+                                title: Text(more[index].topic ?? ""),
+                                trailing: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (context) => ChatScreen(
+                                                  collection:
+                                                      more[index].topic)));
+                                    },
+                                    child: Icon(Icons.add)),
+                              );
                             },
                             itemCount: more.length,
                           ),
